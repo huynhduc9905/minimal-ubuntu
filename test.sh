@@ -9,8 +9,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Set variables
-IMAGE_NAME="ubuntu-jammy-minimal_hwe.img"
-IMAGE_SIZE=4096 # Size in MB
+IMAGE_NAME="ubuntu-jammy-minimal_4096_hwe.img"
+IMAGE_SIZE=5000 # Size in MB
 MOUNT_POINT="/mnt/ubuntu_jammy"
 CHROOT_DIR="${MOUNT_POINT}"
 
@@ -54,6 +54,12 @@ mkdir -p ${MOUNT_POINT}/sys
 mkdir -p ${MOUNT_POINT}/dev
 mkdir -p ${MOUNT_POINT}/run
 mkdir -p ${MOUNT_POINT}/tmp
+
+# Mount necessary filesystems for chroot
+echo "Mounting filesystems for chroot..."
+# mount -t proc none ${CHROOT_DIR}/proc
+# mount -t sysfs none ${CHROOT_DIR}/sys
+# mount -o bind /dev ${CHROOT_DIR}/dev
 
 echo "Chrooting and setting up the system..."
 arch-chroot ${CHROOT_DIR} /bin/bash << EOF
@@ -144,8 +150,13 @@ EOF
 
 # Unmount everything
 echo "Unmounting and cleaning up..."
+# umount ${CHROOT_DIR}/dev
+# umount ${CHROOT_DIR}/sys
+# umount ${CHROOT_DIR}/proc
 umount ${MOUNT_POINT}/boot/efi
 umount ${MOUNT_POINT}
+# rmdir ${MOUNT_POINT}/boot/efi
+# rmdir ${MOUNT_POINT}
 
 # Clean up loopback devices
 losetup -d ${LOOPDEV}
