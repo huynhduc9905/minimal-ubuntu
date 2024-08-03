@@ -1,7 +1,9 @@
 # Minimal Ubuntu HWE Kernel Image Builder
 
 This repository contains a bash script to create a minimal Ubuntu 22.04 (Jammy Jellyfish) image with the Hardware Enablement (HWE) kernel. The project uses GitHub Actions to automate the build process, making it easy to generate up-to-date images.
+
 Kernel version (at Aug/2024): 6.5.0.44.44
+
 UEFI boot
 
 ## Features
