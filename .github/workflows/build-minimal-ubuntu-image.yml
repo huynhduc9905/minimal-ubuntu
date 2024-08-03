@@ -1,0 +1,29 @@
+name: Build Ubuntu Image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y debootstrap parted dosfstools arch-install-scripts
+
+    - name: Build Ubuntu image
+      run: |
+        sudo bash jammy_bootstrap.sh
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ubuntu-jammy-minimal-hwe
+        path: ubuntu-jammy-minimal-hwe.img

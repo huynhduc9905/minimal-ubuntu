@@ -9,7 +9,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Set variables
-IMAGE_NAME="ubuntu-jammy-minimal_4096_hwe.img"
+IMAGE_NAME="ubuntu-jammy-minimal-hwe.img"
 IMAGE_SIZE=5000 # Size in MB
 MOUNT_POINT="/mnt/ubuntu_jammy"
 CHROOT_DIR="${MOUNT_POINT}"
