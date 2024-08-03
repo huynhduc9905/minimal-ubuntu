@@ -38,7 +38,7 @@ UEFI boot
 
 3. Wait for the script to complete. The resulting image will be named `ubuntu-jammy-minimal_hwe.img`.
 
-## GitHub Actions (TODO)
+## GitHub Actions
 
 This repository is set up to use GitHub Actions for automated builds. The workflow will:
 
