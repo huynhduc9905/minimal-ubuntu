@@ -13,6 +13,8 @@ IMAGE_NAME="ubuntu-jammy-minimal_4096_hwe.img"
 IMAGE_SIZE=5000 # Size in MB
 MOUNT_POINT="/mnt/ubuntu_jammy"
 CHROOT_DIR="${MOUNT_POINT}"
+UBUNTU_MIRROR="http://vn.archive.ubuntu.com/ubuntu"
+SECURITY_MIRROR="http://security.ubuntu.com/ubuntu"
 
 # Create an empty image file
 echo "Creating image file..."
@@ -46,7 +48,7 @@ mount ${LOOPDEV_BOOT} ${MOUNT_POINT}/boot/efi
 
 # Bootstrap Ubuntu Jammy
 echo "Bootstrapping Ubuntu Jammy..."
-debootstrap --arch=amd64 jammy ${CHROOT_DIR} https://mirror.bizflycloud.vn/ubuntu/
+debootstrap --arch=amd64 jammy ${CHROOT_DIR} ${UBUNTU_MIRROR}
 
 # Mkdir system folder
 mkdir -p ${MOUNT_POINT}/proc
@@ -55,27 +57,24 @@ mkdir -p ${MOUNT_POINT}/dev
 mkdir -p ${MOUNT_POINT}/run
 mkdir -p ${MOUNT_POINT}/tmp
 
-# Mount necessary filesystems for chroot
-echo "Mounting filesystems for chroot..."
-# mount -t proc none ${CHROOT_DIR}/proc
-# mount -t sysfs none ${CHROOT_DIR}/sys
-# mount -o bind /dev ${CHROOT_DIR}/dev
+# Remove old sources.list and create a new one with all repositories
+rm -f "${CHROOT_DIR}/etc/apt/sources.list"
+
+cat << EOF > "${CHROOT_DIR}/etc/apt/sources.list"
+deb ${UBUNTU_MIRROR} jammy main restricted
+deb ${UBUNTU_MIRROR} jammy-updates main restricted
+deb ${UBUNTU_MIRROR} jammy universe
+deb ${UBUNTU_MIRROR} jammy-updates universe
+deb ${UBUNTU_MIRROR} jammy multiverse
+deb ${UBUNTU_MIRROR} jammy-updates multiverse
+deb ${UBUNTU_MIRROR} jammy-backports main restricted universe multiverse
+deb ${SECURITY_MIRROR} jammy-security main restricted
+deb ${SECURITY_MIRROR} jammy-security universe
+deb ${SECURITY_MIRROR} jammy-security multiverse
+EOF
 
 echo "Chrooting and setting up the system..."
 arch-chroot ${CHROOT_DIR} /bin/bash << EOF
-
-# Remove old sources.list and create a new one with all repositories
-rm -f /etc/apt/sources.list
-echo "deb http://vn.archive.ubuntu.com/ubuntu/ jammy main restricted
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy-updates main restricted
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy universe
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy-updates universe
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy multiverse
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy-updates multiverse
-deb http://vn.archive.ubuntu.com/ubuntu/ jammy-backports main restricted universe multiverse
-deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted
-deb http://security.ubuntu.com/ubuntu/ jammy-security universe
-deb http://security.ubuntu.com/ubuntu/ jammy-security multiverse" > /etc/apt/sources.list
 
 # Set up fstab
 echo "UUID=$(blkid -s UUID -o value ${LOOPDEV_BOOT}) /boot/efi vfat defaults 0 0" >> /etc/fstab
@@ -86,13 +85,12 @@ apt-get update
 apt-get upgrade -y
 apt-get install -y linux-generic-hwe-22.04 linux-firmware grub-efi-amd64 network-manager htop openssh-client openssh-server vim tmux
 
-
-# Set the hostname to "robot"
-hostnamectl set-hostname robot
-echo "robot" > /etc/hostname
+# Set the hostname to "minimal"
+hostnamectl set-hostname minimal
+echo "minimal" > /etc/hostname
 
 # Update /etc/hosts
-sed -i 's/127\.0\.1\.1.*/127.0.1.1 robot/' /etc/hosts
+sed -i 's/127\.0\.1\.1.*/127.0.1.1 minimal/' /etc/hosts
 
 # Disable os-prober in GRUB configuration
 echo "GRUB_DISABLE_OS_PROBER=true" >> /etc/default/grub
@@ -150,13 +148,8 @@ EOF
 
 # Unmount everything
 echo "Unmounting and cleaning up..."
-# umount ${CHROOT_DIR}/dev
-# umount ${CHROOT_DIR}/sys
-# umount ${CHROOT_DIR}/proc
 umount ${MOUNT_POINT}/boot/efi
 umount ${MOUNT_POINT}
-# rmdir ${MOUNT_POINT}/boot/efi
-# rmdir ${MOUNT_POINT}
 
 # Clean up loopback devices
 losetup -d ${LOOPDEV}
