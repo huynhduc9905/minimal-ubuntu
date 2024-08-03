@@ -81,12 +81,12 @@ apt-get upgrade -y
 apt-get install -y linux-generic-hwe-22.04 linux-firmware grub-efi-amd64 network-manager htop openssh-client openssh-server vim tmux
 
 
-# Set the hostname to "robot"
-hostnamectl set-hostname robot
-echo "robot" > /etc/hostname
+# Set the hostname to "minimal"
+hostnamectl set-hostname minimal
+echo "minimal" > /etc/hostname
 
 # Update /etc/hosts
-sed -i 's/127\.0\.1\.1.*/127.0.1.1 robot/' /etc/hosts
+sed -i 's/127\.0\.1\.1.*/127.0.1.1 minimal/' /etc/hosts
 
 # Disable os-prober in GRUB configuration
 echo "GRUB_DISABLE_OS_PROBER=true" >> /etc/default/grub
