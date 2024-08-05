@@ -97,10 +97,17 @@ echo "GRUB_DISABLE_OS_PROBER=true" >> /etc/default/grub
 
 # Set up GRUB for UEFI
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu --recheck
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash noatime nodiratime fastboot"/' /etc/default/grub
 update-grub
 
 # Set root password
 echo "root:1" | chpasswd
+
+# Generate the locale
+locale-gen en_US.UTF-8
+
+# Update the system locale
+update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en_US:en
 
 # Enable and start NetworkManager
 systemctl enable NetworkManager
