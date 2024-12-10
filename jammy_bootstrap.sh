@@ -9,9 +9,9 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Set variables
-IMAGE_NAME="ubuntu-jammy-minimal-hwe.img"
+IMAGE_NAME="ubuntu-noble-minimal-hwe.img"
 IMAGE_SIZE=5000 # Size in MB
-MOUNT_POINT="/mnt/ubuntu_jammy"
+MOUNT_POINT="/mnt/ubuntu_noble"
 CHROOT_DIR="${MOUNT_POINT}"
 UBUNTU_MIRROR="http://vn.archive.ubuntu.com/ubuntu"
 SECURITY_MIRROR="http://security.ubuntu.com/ubuntu"
@@ -46,9 +46,9 @@ mount ${LOOPDEV_ROOT} ${MOUNT_POINT}
 mkdir -p ${MOUNT_POINT}/boot/efi
 mount ${LOOPDEV_BOOT} ${MOUNT_POINT}/boot/efi
 
-# Bootstrap Ubuntu Jammy
-echo "Bootstrapping Ubuntu Jammy..."
-debootstrap --arch=amd64 jammy ${CHROOT_DIR} ${UBUNTU_MIRROR}
+# Bootstrap Ubuntu noble
+echo "Bootstrapping Ubuntu noble..."
+debootstrap --arch=amd64 noble ${CHROOT_DIR} ${UBUNTU_MIRROR}
 
 # Mkdir system folder
 mkdir -p ${MOUNT_POINT}/proc
@@ -61,16 +61,16 @@ mkdir -p ${MOUNT_POINT}/tmp
 rm -f "${CHROOT_DIR}/etc/apt/sources.list"
 
 cat << EOF > "${CHROOT_DIR}/etc/apt/sources.list"
-deb ${UBUNTU_MIRROR} jammy main restricted
-deb ${UBUNTU_MIRROR} jammy-updates main restricted
-deb ${UBUNTU_MIRROR} jammy universe
-deb ${UBUNTU_MIRROR} jammy-updates universe
-deb ${UBUNTU_MIRROR} jammy multiverse
-deb ${UBUNTU_MIRROR} jammy-updates multiverse
-deb ${UBUNTU_MIRROR} jammy-backports main restricted universe multiverse
-deb ${SECURITY_MIRROR} jammy-security main restricted
-deb ${SECURITY_MIRROR} jammy-security universe
-deb ${SECURITY_MIRROR} jammy-security multiverse
+deb ${UBUNTU_MIRROR} noble main restricted
+deb ${UBUNTU_MIRROR} noble-updates main restricted
+deb ${UBUNTU_MIRROR} noble universe
+deb ${UBUNTU_MIRROR} noble-updates universe
+deb ${UBUNTU_MIRROR} noble multiverse
+deb ${UBUNTU_MIRROR} noble-updates multiverse
+deb ${UBUNTU_MIRROR} noble-backports main restricted universe multiverse
+deb ${SECURITY_MIRROR} noble-security main restricted
+deb ${SECURITY_MIRROR} noble-security universe
+deb ${SECURITY_MIRROR} noble-security multiverse
 EOF
 
 echo "Chrooting and setting up the system..."
