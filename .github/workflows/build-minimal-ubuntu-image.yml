@@ -23,7 +23,7 @@ jobs:
         sudo bash jammy_bootstrap.sh
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4.1.8
       with:
-        name: ubuntu-jammy-minimal-hwe
-        path: ubuntu-jammy-minimal-hwe.img
+        name: ubuntu-noble-minimal-hwe
+        path: ubuntu-noble-minimal-hwe.img
