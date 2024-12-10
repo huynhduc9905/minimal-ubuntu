@@ -83,7 +83,7 @@ echo "UUID=$(blkid -s UUID -o value ${LOOPDEV_ROOT}) / ext4 errors=remount-ro 0 
 # Install necessary packages
 apt-get update
 apt-get upgrade -y
-apt-get install -y linux-generic-hwe-22.04 linux-firmware grub-efi-amd64 network-manager htop openssh-client openssh-server vim tmux
+apt-get install -y linux-generic-hwe-24.04 linux-firmware grub-efi-amd64 network-manager htop openssh-client openssh-server vim tmux
 
 # Set the hostname to "minimal"
 hostnamectl set-hostname minimal
